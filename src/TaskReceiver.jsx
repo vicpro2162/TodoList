@@ -4,7 +4,7 @@ import {Button,} from './App.jsx'
 export const TaskReceiver = () => {
     return(
         <div className="task-receiver">
-            <h3>Tâche à ajouter</h3>
+            <h3><strong>Tâche à ajouter</strong></h3>
             <TaskInput />
             <ButtonContainer />
         </div>
