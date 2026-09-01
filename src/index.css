@@ -157,7 +157,11 @@ input{
 }
 
 
-.cancel,.confirm{
-  height: 40px;
+.cancel{
+  background-color: red;
+}
+
+.confirm{
+background-color: green;
 }
 
