@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+/* Les utilitaires Tailwind assurent l'essentiel du style de l'application. */
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -37,11 +38,9 @@ body {
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
+  width: 100%;
+  margin: 0;
+  text-align: left;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -91,9 +90,9 @@ button{
 
 
 /*Conteneur principal du projet*/
-#root{
-border: 1px solid #5d26cc;
-border-radius: 10px;
+#root {
+  border: 0;
+  border-radius: 0;
 }
 
 
@@ -121,7 +120,6 @@ border-radius: 10px;
     align-items: center;
     justify-content: center;
     margin-top: 20px;
-    border: 1px solid #5d26cc;
     color:rgb(7, 7, 7);
 }
 

@@ -3,6 +3,7 @@ import {useState} from 'react'
 import {Button,} from './App.jsx'
 
 export function TaskReceiver({onCancel,onConfirm}) {
+    // Contrôle le formulaire d'ajout et son message de validation.
     const [task, setTask] = useState("")
     const [error, setError] = useState("")
     function handleConfirm() {
@@ -40,6 +41,7 @@ export function TaskReceiver({onCancel,onConfirm}) {
 }
 
 export function TaskInput({task,setTask}) {
+    // Place automatiquement le curseur dans le champ à l'ouverture.
     const inputRef = useRef(null);
     useEffect(() => {
         inputRef.current.focus();
@@ -54,7 +56,7 @@ export function TaskInput({task,setTask}) {
                 onChange={handleChange}
                 ref={inputRef}
                 aria-label="Nom de la tâche"
-                className="mt-7 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+                className="mt-7 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white"
             />
     
     
@@ -63,6 +65,7 @@ export function TaskInput({task,setTask}) {
 }
 
 export function ButtonContainer ({onCancel,onConfirm}) {
+    // Regroupe les deux actions du formulaire.
     return (
         <div className='mt-6 flex justify-end gap-3'>
 
