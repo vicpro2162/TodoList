@@ -147,6 +147,10 @@ input{
   margin:200px auto;
 }
 
+/*Liste des tâches*/
+.task-list{
+  align-items: left;}
+
 /*Conteneur des bouttons annuler et valider*/
 .button-container{
   justify-content: center;
@@ -154,14 +158,5 @@ input{
   margin:30px 0px 3px 0px  ;  
   gap: 10px;
   
-}
-
-
-.cancel{
-  background-color: red;
-}
-
-.confirm{
-background-color: green;
 }
 
