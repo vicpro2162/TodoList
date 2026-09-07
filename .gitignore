@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 logique.md
 raport.md
+.env

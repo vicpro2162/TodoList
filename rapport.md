@@ -82,3 +82,76 @@ L'objectif de cette journée était de faire évoluer l'interface et les fonctio
 - Afficher les tâches correspondant au jour sélectionné dans le calendrier.
 - Ajouter une vue détaillée du calendrier en plein écran.
 - Mettre à jour la documentation du MVP après l'ajout de la persistance des données.
+
+---
+
+# Rapport d'activités — 7 septembre 2026
+
+## Objectif
+
+Préparer la persistance des tâches et mettre en place une architecture backend permettant de relier l'application React à une base de données MySQL locale exécutée avec XAMPP.
+
+## Travaux réalisés
+
+### 1. Choix de l'architecture technique
+
+- Choix d'une architecture séparant le frontend, l'API backend et la base de données.
+- Définition du flux : React → API Express → MySQL.
+- Décision de gérer la génération des UUID côté backend plutôt que côté frontend.
+- Remplacement du nom de la base et de l'application par `taskplus`.
+
+### 2. Création de la base de données
+
+- Création de la base MySQL `taskplus` avec XAMPP.
+- Création de la table `tasks`.
+- Utilisation d'un identifiant `CHAR(36)` compatible avec les UUID.
+- Ajout des colonnes `title`, `done`, `created_at` et `updated_at`.
+- Utilisation de `ON UPDATE CURRENT_TIMESTAMP` pour actualiser automatiquement la date de modification.
+
+### 3. Configuration de l'environnement
+
+- Création et configuration du fichier `.env` à la racine du projet.
+- Configuration de la connexion à MySQL sur `localhost:3306`.
+- Configuration de la base `taskplus` et du port de l'API sur `3301`.
+- Ajout du fichier `.env` dans `.gitignore` afin de protéger les identifiants de connexion.
+
+### 4. Installation des dépendances backend
+
+- Installation d'Express pour créer l'API.
+- Installation de `mysql2` pour communiquer avec MySQL.
+- Installation de `dotenv` pour charger les variables d'environnement.
+- Installation de `cors` pour autoriser les requêtes du frontend.
+
+### 5. Création du backend
+
+- Création du serveur Express dans `server/server.js`.
+- Mise en place de la connexion à MySQL avec un pool de connexions.
+- Ajout de la route `GET /api/health` pour tester l'état de l'API et de la base.
+- Ajout des routes CRUD pour les tâches :
+	- `GET /api/tasks` ;
+	- `POST /api/tasks` ;
+	- `PATCH /api/tasks/:id` ;
+	- `DELETE /api/tasks/:id`.
+- Ajout de la validation du titre des tâches.
+- Génération des UUID côté backend lors de la création d'une tâche.
+
+### 6. Vérifications réalisées
+
+- Démarrage réussi de l'API sur `http://localhost:3301`.
+- Vérification réussie de la connexion à MySQL avec la route `/api/health`.
+- Validation du projet avec `npm run lint`.
+- Validation de la build frontend avec `npm run build`.
+
+## État actuel
+
+Le backend et la base MySQL sont prêts et communiquent correctement. Le frontend utilise encore temporairement son état local avec `useState` et génère encore les UUID dans `src/App.jsx`.
+
+## Travaux restant à réaliser
+
+- Connecter manuellement React à `GET /api/tasks` pour charger les tâches depuis MySQL.
+- Remplacer l'ajout local par `POST /api/tasks`.
+- Connecter la modification et le changement de statut à `PATCH /api/tasks/:id`.
+- Connecter la suppression à `DELETE /api/tasks/:id`.
+- Ajouter le proxy Vite vers le backend en développement.
+- Tester les opérations CRUD depuis l'interface React.
+- Ajouter ensuite les dates d'exécution des tâches dans la base et dans l'interface.

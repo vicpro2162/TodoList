@@ -29,7 +29,7 @@ function handleAddTask(task){
   setTaskList([
     ...taskList,
     {
-      id: taskList.length + 1,
+      id: crypto.randomUUID(),
       title: task,
       done: false
     }
@@ -73,7 +73,7 @@ function handleToggleTask(id) {
             <aside className={`fixed inset-y-0 left-0 z-50 w-72 border-r border-slate-200 bg-white px-5 py-8 transition-transform duration-200 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
               <div className="flex items-center gap-3 px-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-lg font-bold text-white">T</div>
-                <div className="flex-1"><p className="font-bold text-slate-950">Taskly</p><p className="text-xs text-slate-400">Mon espace</p></div>
+                <div className="flex-1"><p className="font-bold text-slate-950">Taskplus</p><p className="text-xs text-slate-400">Mon espace</p></div>
                 <button type="button" onClick={() => setMenuOpen(false)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700" aria-label="Fermer le menu"><FiX /></button>
               </div>
               <nav className="mt-12 space-y-2" aria-label="Navigation principale">
