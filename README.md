@@ -1,89 +1,127 @@
-# TodoList React
+# Taskplus
 
-Ce projet est une application front-end de gestion de tâches développée avec React et Vite. Il ne s’agit plus d’un simple prototype : l’interface actuelle inclut un tableau de bord, des filtres, des cartes de tâches, une validation de formulaire et un calendrier interactif.
+Taskplus est une application de gestion de tâches développée avec React. Le projet contient maintenant un frontend React/Vite et une API backend Express connectée à une base MySQL locale exécutée avec XAMPP.
 
-## 🚀 Fonctionnalités actuellement présentes
+## Architecture actuelle
 
-- Ajout d’une nouvelle tâche via une modale
-- Affichage des tâches sous forme de cartes
-- Cocher / décocher une tâche comme terminée
-- Modifier le titre d’une tâche
-- Supprimer une tâche
-- Filtrage par statut : toutes, à faire, terminées
-- Notification visuelle après l’ajout d’une tâche
-- Menu latéral avec navigation simple
-- Calendrier interactif avec sélection de date
-- Indicateur de progression globale des tâches
-- Interface responsive en style moderne
+```text
+React/Vite → API Node.js/Express → MySQL (XAMPP)
+```
 
-## 🧩 Composants principaux
+- Le frontend affiche le tableau de bord et gère actuellement les tâches dans `useState`.
+- Le backend expose une API REST et génère les UUID des nouvelles tâches.
+- MySQL assure la persistance dans la base `taskplus`.
+- Le frontend n'est pas encore connecté à l'API : le raccordement des appels HTTP reste à effectuer manuellement.
 
-- src/App.jsx : gestion de l’état global, filtres, menu, calendrier et progression
-- src/TaskReceiver.jsx : formulaire d’ajout avec validation de saisie
-- src/Taskcontainer.jsx : liste des tâches et actions sur chaque carte
-- src/main.jsx : point d’entrée de l’application
-- src/index.css : styles globaux et base Tailwind
+## Fonctionnalités frontend
 
-## 🛠️ Stack technique
+- Ajout d'une tâche via une modale avec validation.
+- Affichage des tâches sous forme de cartes.
+- Marquage d'une tâche comme terminée ou active.
+- Modification du titre d'une tâche.
+- Suppression d'une tâche.
+- Filtrage par statut : toutes, à faire et terminées.
+- Notification après l'ajout d'une tâche.
+- Menu latéral responsive.
+- Calendrier interactif en français.
+- Indicateur de progression globale.
 
-- React 19
-- Vite 8
-- Tailwind CSS 4
-- React Icons
-- date-fns
-- react-day-picker
-- ESLint
+## API backend disponible
 
-## 📁 Structure du projet
+Le serveur se trouve dans `server/server.js` et écoute par défaut sur le port `3301`.
 
-- src/App.jsx : logique principale de l’application
-- src/TaskReceiver.jsx : modale de création de tâche
-- src/Taskcontainer.jsx : conteneur et cartes de tâches
-- src/index.css : configuration visuelle globale
-- public/ : fichiers statiques
+| Méthode | Route | Rôle |
+| --- | --- | --- |
+| GET | `/api/health` | Vérifier l'API et la connexion MySQL |
+| GET | `/api/tasks` | Récupérer les tâches |
+| POST | `/api/tasks` | Créer une tâche et générer son UUID |
+| PATCH | `/api/tasks/:id` | Modifier le titre ou le statut |
+| DELETE | `/api/tasks/:id` | Supprimer une tâche |
 
-## ▶️ Installation et lancement
+## Base de données
 
-1. Installer les dépendances :
-   ```bash
-   npm install
-   ```
+La base utilisée est `taskplus`. La table `tasks` contient notamment :
 
-2. Démarrer le serveur de développement :
-   ```bash
-   npm run dev
-   ```
+- `id` : UUID stocké en `CHAR(36)` et clé primaire ;
+- `title` : titre obligatoire de la tâche ;
+- `done` : statut de la tâche ;
+- `created_at` : date de création ;
+- `updated_at` : date de dernière modification.
 
-3. Ouvrir l’application dans le navigateur à l’URL affichée par Vite.
+MySQL doit être démarré depuis XAMPP. Les paramètres de connexion sont définis dans `.env`, qui est exclu du dépôt avec `.gitignore`.
 
-## 📦 Scripts disponibles
+Exemple de configuration locale :
 
-- npm run dev : lance le serveur de développement
-- npm run build : construit la version de production
-- npm run preview : prévisualise la build
-- npm run lint : vérifie le projet avec ESLint
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=taskplus
+PORT=3301
+```
 
-## 📝 État du projet
+## Installation
 
-Le projet correspond actuellement à un MVP visuel et fonctionnel de gestion de tâches avec interface dashboard. Les fonctionnalités déjà intégrées dépassent le simple écran de liste et montrent une base solide pour la suite.
+Installer les dépendances depuis la racine du projet :
 
-Les améliorations restantes concernent surtout :
+```bash
+npm install
+```
 
-- la persistance des données dans le navigateur
-- l’association d’une date et d’une heure à chaque tâche
-- l’affichage des tâches selon la date sélectionnée dans le calendrier
-- une vue calendrier plus avancée inspirée de Google Calendar
-- la gestion plus robuste des identifiants après suppression
+Avant de démarrer le backend, créer la base `taskplus` et la table `tasks` dans MySQL, puis renseigner `.env`.
 
-## ✅ Ce qui a été ajouté par rapport au README précédent
+## Lancement
 
-- dashboard d’accueil moderne
-- menu latéral
-- filtres de tâches
-- cartes de tâches avec actions
-- modification en ligne
-- bouton de suppression
-- notification de confirmation
-- calendrier interactif
-- indicateur de progression
-- intégration de react-day-picker et date-fns
+Démarrer l'API backend dans un terminal :
+
+```bash
+npm run server
+```
+
+Démarrer le frontend dans un autre terminal :
+
+```bash
+npm run dev
+```
+
+Routes utiles :
+
+- frontend : adresse indiquée par Vite, généralement `http://localhost:5173` ;
+- API : `http://localhost:3301` ;
+- test de connexion : `http://localhost:3301/api/health`.
+
+## Scripts disponibles
+
+- `npm run dev` : démarrer le frontend Vite ;
+- `npm run server` : démarrer l'API Express ;
+- `npm run build` : construire le frontend pour la production ;
+- `npm run preview` : prévisualiser la build ;
+- `npm run lint` : vérifier le code avec ESLint.
+
+## Structure principale
+
+```text
+src/
+├── App.jsx             # État actuel de l'interface et actions frontend
+├── TaskReceiver.jsx    # Formulaire d'ajout d'une tâche
+├── Taskcontainer.jsx   # Liste et cartes des tâches
+├── index.css           # Styles globaux
+└── main.jsx            # Point d'entrée React
+server/
+└── server.js           # API Express et connexion MySQL
+```
+
+## État actuel et prochaines étapes
+
+Le backend est créé, la connexion à MySQL a été testée avec succès et les routes CRUD sont disponibles. Le frontend utilise encore temporairement un état local : les tâches créées dans l'interface ne sont donc pas encore enregistrées dans MySQL.
+
+Travaux restants :
+
+- charger les tâches avec `GET /api/tasks` ;
+- remplacer l'ajout local par `POST /api/tasks` ;
+- connecter la modification et le changement de statut à `PATCH /api/tasks/:id` ;
+- connecter la suppression à `DELETE /api/tasks/:id` ;
+- ajouter le proxy Vite pour le développement ;
+- associer les dates et heures du calendrier aux tâches ;
+- créer une vue calendrier plus détaillée.
