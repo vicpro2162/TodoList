@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { FiEdit2, FiSave, FiTrash2, FiX } from 'react-icons/fi'
 
+// Affiche la liste des tâches et transmet les actions aux cartes individuelles.
 function TaskContainer({taskList,onToggleTask,onDeleteTask,onUpdateTask}) {
     // Affiche toutes les tâches sous forme de cartes espacées.
     return <>
@@ -30,6 +31,7 @@ function TaskCard({task,onToggleTask,onDeleteTask,onUpdateTask}) {
     const [isEditing, setIsEditing] = useState(false)
     const [title, setTitle] = useState(task.title)
 
+    // Valide le nouveau titre avant de demander sa sauvegarde au parent.
     function handleSave() {
         const cleanTitle = title.trim()
         if (!cleanTitle) return

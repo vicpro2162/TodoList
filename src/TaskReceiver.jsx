@@ -2,6 +2,7 @@ import {useEffect, useRef} from 'react'
 import {useState} from 'react'
 import {Button,} from './App.jsx'
 
+// Modale de saisie utilisée pour créer une nouvelle tâche.
 export function TaskReceiver({onCancel,onConfirm}) {
     // Contrôle le formulaire d'ajout et son message de validation.
     const [task, setTask] = useState("")
@@ -47,6 +48,7 @@ export function TaskInput({task,setTask}) {
         inputRef.current.focus();
     }, []);
 
+    // Transmet chaque modification du champ au composant parent.
     function handleChange(e){
         setTask(e.target.value);
     }

@@ -5,6 +5,7 @@ import {App,} from './App.jsx'
 
 // Point d'entrée de l'application React.
 
+// Monte l'application dans l'élément root défini dans index.html.
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />

@@ -1,11 +1,24 @@
-import {useState}  from 'react'
+import { useEffect, useState } from 'react'
 import { FiCheckCircle, FiList, FiMenu, FiPlus, FiSettings, FiX } from 'react-icons/fi'
 import { DayPicker } from 'react-day-picker'
+import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import 'react-day-picker/style.css'
 import TaskContainer from './Taskcontainer.jsx'
 import {TaskReceiver} from './TaskReceiver.jsx'
 
+const API_URL = 'http://localhost:3000/api/tasks'
+
+async function requestApi(url, options) {
+  const response = await fetch(url, options)
+  const data = response.status === 204 ? null : await response.json()
+
+  if (!response.ok) {
+    throw new Error(data?.error || 'Une erreur est survenue.')
+  }
+
+  return data
+}
 
 export function App  () {
 // Centralise l'état des tâches et l'état d'ouverture des éléments de l'interface.
@@ -14,8 +27,20 @@ const[taskList, setTaskList] = useState([])
 const[notice, setNotice] = useState('')
 const[isMenuOpen, setMenuOpen] = useState(false)
 const[selectedDate, setSelectedDate] = useState(new Date())
+const[currentDate, setCurrentDate] = useState(new Date())
 const[taskFilter, setTaskFilter] = useState('all')
 const utilisateur = 'utilisateur'
+
+useEffect(() => {
+  const clock = setInterval(() => setCurrentDate(new Date()), 1000)
+  return () => clearInterval(clock)
+}, [])
+
+useEffect(() => {
+  requestApi(API_URL)
+    .then(setTaskList)
+    .catch((error) => setNotice(error.message))
+}, [])
 
 // Calcule la vue filtrée sans modifier la liste complète des tâches.
 const visibleTasks = taskList.filter((task) => {
@@ -24,44 +49,61 @@ const visibleTasks = taskList.filter((task) => {
   return true
 })
 
-function handleAddTask(task){
-  // Ajoute la nouvelle tâche puis ferme la fenêtre de saisie.
-  setTaskList([
-    ...taskList,
-    {
-      id: crypto.randomUUID(),
-      title: task,
-      done: false
-    }
-  ])
-  setTaskReceiverOpen(false)
-  setNotice('Tâche enregistrée')
+async function handleAddTask(task){
+  try {
+    const newTask = await requestApi(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: task })
+    })
+
+    setTaskList((currentTasks) => [...currentTasks, newTask])
+    setTaskReceiverOpen(false)
+    setNotice('Tâche enregistrée')
+  } catch (error) {
+    setNotice(error.message)
+  }
 }
 
-function handleToggleTask(id) {
-  // Inverse le statut terminé de la tâche sélectionnée.
-    setTaskList(
-        taskList.map((task) =>
-            task.id === id
-                ? { ...task, done: !task.done }
-                : task
-        )
-    );
+async function handleToggleTask(id) {
+  const task = taskList.find((item) => item.id === id)
+  if (!task) return
+
+  try {
+    const updatedTask = await requestApi(`${API_URL}/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ done: !task.done })
+    })
+
+    setTaskList((currentTasks) => currentTasks.map((item) => item.id === id ? updatedTask : item))
+  } catch (error) {
+    setNotice(error.message)
+  }
 }
 
-  function handleDeleteTask(id) {
-    // Retire la tâche sans modifier les autres éléments de la liste.
-    setTaskList(taskList.filter((task) => task.id !== id));
+async function handleDeleteTask(id) {
+  try {
+    await requestApi(`${API_URL}/${id}`, { method: 'DELETE' })
+    setTaskList((currentTasks) => currentTasks.filter((task) => task.id !== id))
+  } catch (error) {
+    setNotice(error.message)
   }
+}
 
-  function handleUpdateTask(id, title) {
-    // Remplace uniquement le titre de la tâche modifiée.
-    setTaskList(
-      taskList.map((task) =>
-        task.id === id ? { ...task, title } : task
-      )
-    );
+async function handleUpdateTask(id, title) {
+  try {
+    const updatedTask = await requestApi(`${API_URL}/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title })
+    })
+
+    setTaskList((currentTasks) => currentTasks.map((task) => task.id === id ? updatedTask : task))
+  } catch (error) {
+    setNotice(error.message)
   }
+}
 
  return <main className="min-h-screen bg-[#f7f8fc] text-slate-900">
           <div className="mx-auto flex min-h-screen max-w-[1440px]">
@@ -83,7 +125,7 @@ function handleToggleTask(id) {
             </aside>
             <div className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-10">
               <header className="flex flex-col gap-5 border-b border-slate-200 pb-7 sm:flex-row sm:items-end sm:justify-between">
-                <div><p className="text-sm font-semibold text-indigo-600">Mardi 4 septembre 2026</p><h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Bonjour, {utilisateur}</h1></div>
+                <div><p className="text-sm font-semibold text-indigo-600">{format(currentDate, "EEEE d MMMM yyyy - HH:mm:ss", { locale: fr })}</p><h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Bonjour, {utilisateur}</h1></div>
                 <Button titre="Nouvelle tâche" onClick={()=>setTaskReceiverOpen(true)}><FiPlus aria-hidden="true" /></Button>
               </header>
               <section id="tasks" className="mt-8">

@@ -4,6 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
+// Définit les règles ESLint communes au frontend et au serveur.
 export default defineConfig([
   globalIgnores(['dist']),
   {

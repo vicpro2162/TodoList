@@ -4,9 +4,11 @@ import express from 'express'
 import { randomUUID } from 'node:crypto'
 import mysql from 'mysql2/promise'
 
+// Initialise l'application et récupère le port depuis les variables d'environnement.
 const app = express()
 const port = Number(process.env.PORT || 3301)
 
+// Crée un pool de connexions réutilisables vers la base MySQL.
 const database = mysql.createPool({
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT || 3306),
@@ -17,9 +19,11 @@ const database = mysql.createPool({
   connectionLimit: 10
 })
 
+// Autorise le frontend React à communiquer avec l'API et accepte les requêtes JSON.
 app.use(cors({ origin: 'http://localhost:5173' }))
 app.use(express.json())
 
+// Vérifie que l'API répond et que la base de données est accessible.
 app.get('/api/health', async (_request, response) => {
   try {
     await database.query('SELECT 1')
@@ -30,6 +34,7 @@ app.get('/api/health', async (_request, response) => {
   }
 })
 
+// Récupère toutes les tâches, de la plus récente à la plus ancienne.
 app.get('/api/tasks', async (_request, response) => {
   try {
     const [tasks] = await database.query(
@@ -42,6 +47,7 @@ app.get('/api/tasks', async (_request, response) => {
   }
 })
 
+// Crée une tâche après validation de son titre.
 app.post('/api/tasks', async (request, response) => {
   const title = request.body?.title?.trim()
 
@@ -66,6 +72,7 @@ app.post('/api/tasks', async (request, response) => {
   }
 })
 
+// Modifie le titre et/ou le statut d'une tâche existante.
 app.patch('/api/tasks/:id', async (request, response) => {
   const { id } = request.params
   const title = request.body?.title?.trim()
@@ -76,6 +83,7 @@ app.patch('/api/tasks/:id', async (request, response) => {
   }
 
   try {
+    // Prépare uniquement les champs envoyés par le frontend.
     const fields = []
     const values = []
 
@@ -113,6 +121,7 @@ app.patch('/api/tasks/:id', async (request, response) => {
   }
 })
 
+// Supprime une tâche à partir de son identifiant.
 app.delete('/api/tasks/:id', async (request, response) => {
   try {
     const [result] = await database.query(
